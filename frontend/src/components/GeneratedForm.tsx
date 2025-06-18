@@ -15,14 +15,12 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 interface GeneratedFormProps {
   generatedHtml: string;
   loading: boolean;
-  error: string | null;
   onReset: () => void;
 }
 
 const GeneratedForm: React.FC<GeneratedFormProps> = ({
   generatedHtml,
   loading,
-  error,
   onReset,
 }) => {
   const [showCopied, setShowCopied] = useState<boolean>(false);
@@ -67,12 +65,6 @@ const GeneratedForm: React.FC<GeneratedFormProps> = ({
           </Box>
         )}
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
         {!loading && generatedHtml && (
           <Box
             sx={{
@@ -112,7 +104,7 @@ const GeneratedForm: React.FC<GeneratedFormProps> = ({
           />
         )}
 
-        {!loading && !generatedHtml && !error && (
+        {!loading && !generatedHtml && (
           <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
             <Typography>
               Build your form schema on the left and click "Generate Form" to see the result here.

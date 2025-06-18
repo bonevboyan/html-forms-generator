@@ -10,11 +10,9 @@ import GeneratedForm from './components/GeneratedForm';
 function App() {
   const [generatedHtml, setGeneratedHtml] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleReset = () => {
     setGeneratedHtml('');
-    setError(null);
   };
 
   return (
@@ -29,7 +27,6 @@ function App() {
             <SchemaBuilder 
               onFormGenerated={setGeneratedHtml}
               onLoadingChange={setLoading}
-              onErrorChange={setError}
             />
           </Box>
 
@@ -37,7 +34,6 @@ function App() {
             <GeneratedForm
               generatedHtml={generatedHtml}
               loading={loading}
-              error={error}
               onReset={handleReset}
             />
           </Box>

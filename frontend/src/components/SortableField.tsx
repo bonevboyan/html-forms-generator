@@ -25,6 +25,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { SchemaEntry } from '../types/schemas';
+import { useFieldEditing } from '../hooks/useFieldEditing';
 
 interface SortableFieldProps {
   id: string;
@@ -33,13 +34,6 @@ interface SortableFieldProps {
   onUpdateField: (path: string[], value: Partial<SchemaEntry>) => void;
   onDeleteField: (path: string[]) => void;
   onRenameField: (oldPath: string[], newName: string) => void;
-  editingField: string | null;
-  editingValue: string;
-  onFieldNameChange: (path: string[], newName: string) => void;
-  onFieldNameBlur: (path: string[]) => void;
-  onFieldNameKeyDown: (e: React.KeyboardEvent, path: string[]) => void;
-  onSetEditingField: (key: string) => void;
-  onSetEditingValue: (value: string) => void;
   onAddField: (parentPath: string[]) => void;
   sensors: any;
   onDragEnd: (event: any, parentPath: string[]) => void;
@@ -52,13 +46,6 @@ const SortableField: React.FC<SortableFieldProps> = ({
   onUpdateField,
   onDeleteField,
   onRenameField,
-  editingField,
-  editingValue,
-  onFieldNameChange,
-  onFieldNameBlur,
-  onFieldNameKeyDown,
-  onSetEditingField,
-  onSetEditingValue,
   onAddField,
   sensors,
   onDragEnd,
@@ -72,15 +59,34 @@ const SortableField: React.FC<SortableFieldProps> = ({
     isDragging,
   } = useSortable({ id });
 
+  // Local editing state for this field
+  const {
+    editingField,
+    editingValue,
+    setEditingField,
+    setEditingValue,
+    handleFieldNameChange,
+    handleFieldNameBlur,
+    handleFieldNameKeyDown,
+  } = useFieldEditing();
+
+  const currentPath = [...path, id];
+  const fullKey = currentPath.join('.');
+  const isEditing = editingField === fullKey;
+
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const currentPath = [...path, id];
-  const fullKey = currentPath.join('.');
-  const isEditing = editingField === fullKey;
+  // Wrap the handlers to use the correct path and rename function
+  const handleFieldNameBlurWithRename = () => {
+    handleFieldNameBlur(currentPath, onRenameField);
+  };
+  const handleFieldNameKeyDownWithRename = (e: React.KeyboardEvent) => {
+    handleFieldNameKeyDown(e, currentPath, onRenameField);
+  };
 
   return (
     <Paper 
@@ -100,12 +106,12 @@ const SortableField: React.FC<SortableFieldProps> = ({
         <TextField
           label="Field Name"
           value={isEditing ? editingValue : id}
-          onChange={(e) => onFieldNameChange(currentPath, e.target.value)}
-          onBlur={() => onFieldNameBlur(currentPath)}
-          onKeyDown={(e) => onFieldNameKeyDown(e, currentPath)}
+          onChange={(e) => handleFieldNameChange(currentPath, e.target.value)}
+          onBlur={handleFieldNameBlurWithRename}
+          onKeyDown={handleFieldNameKeyDownWithRename}
           onFocus={() => {
-            onSetEditingField(fullKey);
-            onSetEditingValue(id);
+            setEditingField(fullKey);
+            setEditingValue(id);
           }}
           size="small"
           sx={{ flexGrow: 1 }}
@@ -185,40 +191,10 @@ const SortableField: React.FC<SortableFieldProps> = ({
           label="Options (one per line, format: value,label)"
           multiline
           rows={4}
-          value={(field as any).options?.map((opt: any) => {
-            // Handle both old tuple format and new SelectOption format
-            if (Array.isArray(opt)) {
-              return `${opt[0]},${opt[1]}`;
-            }
-            return `${opt.value},${opt.label}`;
-          }).join('\n') || ''}
-          onChange={(e) => {
-            const options = e.target.value
-              .split('\n')
-              .filter(Boolean)
-              .map(line => {
-                const [value, label] = line.split(',').map(s => s.trim());
-                return { value, label };
-              });
-            onUpdateField(currentPath, { options });
-          }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              // Focus the next field or submit
-              const form = e.currentTarget.closest('form');
-              if (form) {
-                const inputs = Array.from(form.querySelectorAll('input, textarea, select'));
-                const currentIndex = inputs.indexOf(e.currentTarget);
-                const nextInput = inputs[currentIndex + 1] as HTMLElement;
-                if (nextInput) {
-                  nextInput.focus();
-                }
-              }
-            }
-          }}
+          value={field.optionsRaw ?? ''}
+          onChange={(e) => onUpdateField(currentPath, { optionsRaw: e.target.value })}
           sx={{ mb: 2 }}
-          helperText="Enter each option on a new line in the format: value,label. Press Enter to move to next field."
+          helperText="Enter each option on a new line in the format: value,label. No validation until you generate."
         />
       )}
 
@@ -242,13 +218,6 @@ const SortableField: React.FC<SortableFieldProps> = ({
                   onUpdateField={onUpdateField}
                   onDeleteField={onDeleteField}
                   onRenameField={onRenameField}
-                  editingField={editingField}
-                  editingValue={editingValue}
-                  onFieldNameChange={onFieldNameChange}
-                  onFieldNameBlur={onFieldNameBlur}
-                  onFieldNameKeyDown={onFieldNameKeyDown}
-                  onSetEditingField={onSetEditingField}
-                  onSetEditingValue={onSetEditingValue}
                   onAddField={onAddField}
                   sensors={sensors}
                   onDragEnd={onDragEnd}

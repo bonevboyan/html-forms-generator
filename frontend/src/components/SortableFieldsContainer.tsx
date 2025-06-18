@@ -22,13 +22,6 @@ interface SortableFieldsContainerProps {
   onUpdateField: (path: string[], value: Partial<SchemaEntry>) => void;
   onDeleteField: (path: string[]) => void;
   onRenameField: (oldPath: string[], newName: string) => void;
-  editingField: string | null;
-  editingValue: string;
-  onFieldNameChange: (path: string[], newName: string) => void;
-  onFieldNameBlur: (path: string[]) => void;
-  onFieldNameKeyDown: (e: React.KeyboardEvent, path: string[]) => void;
-  onSetEditingField: (key: string) => void;
-  onSetEditingValue: (value: string) => void;
   onAddField: (parentPath: string[]) => void;
   onDragEnd: (event: DragEndEvent, parentPath: string[]) => void;
 }
@@ -39,13 +32,6 @@ const SortableFieldsContainer: React.FC<SortableFieldsContainerProps> = ({
   onUpdateField,
   onDeleteField,
   onRenameField,
-  editingField,
-  editingValue,
-  onFieldNameChange,
-  onFieldNameBlur,
-  onFieldNameKeyDown,
-  onSetEditingField,
-  onSetEditingValue,
   onAddField,
   onDragEnd,
 }) => {
@@ -77,13 +63,6 @@ const SortableFieldsContainer: React.FC<SortableFieldsContainerProps> = ({
             onUpdateField={onUpdateField}
             onDeleteField={onDeleteField}
             onRenameField={onRenameField}
-            editingField={editingField}
-            editingValue={editingValue}
-            onFieldNameChange={onFieldNameChange}
-            onFieldNameBlur={onFieldNameBlur}
-            onFieldNameKeyDown={onFieldNameKeyDown}
-            onSetEditingField={onSetEditingField}
-            onSetEditingValue={onSetEditingValue}
             onAddField={onAddField}
             sensors={sensors}
             onDragEnd={onDragEnd}

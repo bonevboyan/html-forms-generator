@@ -14,18 +14,15 @@ import SortableFieldsContainer from './SortableFieldsContainer';
 import { validateSchema } from '../utils/schemaValidation';
 import { useSchemaManager } from '../hooks/useSchemaManager';
 import { useFieldEditing } from '../hooks/useFieldEditing';
-import { Schema } from '../types/schemas';
 
 interface SchemaBuilderProps {
   onFormGenerated: (html: string) => void;
   onLoadingChange: (loading: boolean) => void;
-  onErrorChange: (error: string | null) => void;
 }
 
 const SchemaBuilder: React.FC<SchemaBuilderProps> = ({ 
   onFormGenerated, 
-  onLoadingChange, 
-  onErrorChange 
+  onLoadingChange
 }) => {
   const [error, setError] = useState<string | null>(null);
   
@@ -38,45 +35,59 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
     handleDragEnd,
   } = useSchemaManager();
 
-  const {
-    editingField,
-    editingValue,
-    setEditingField,
-    setEditingValue,
-    handleFieldNameChange,
-    handleFieldNameBlur,
-    handleFieldNameKeyDown,
-  } = useFieldEditing();
 
   const handleSubmit = async () => {
-    const validation = validateSchema(schema);
+    // Parse and validate select options from optionsRaw before validation
+    const schemaCopy = JSON.parse(JSON.stringify(schema));
+    let optionsError: string | null = null;
+    function processSchema(s: any, path: string[] = []) {
+      for (const [key, fieldRaw] of Object.entries(s)) {
+        const field = fieldRaw as any;
+        const currentPath = [...path, key];
+        if (field.type === 'select') {
+          if (typeof field.optionsRaw === 'string') {
+            const lines = field.optionsRaw.split('\n').filter(Boolean);
+            const options = [];
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+              const parts = line.split(',');
+              if (parts.length !== 2) {
+                optionsError = `Select field "${currentPath.join('.')}" has invalid option format on line ${i + 1}: "${line}". Each line must be value,label.`;
+                break;
+              }
+              options.push({ value: parts[0].trim(), label: parts[1].trim() });
+            }
+            if (optionsError) break;
+            field.options = options;
+          }
+        }
+        if (field.type === 'schema' && field.schema) {
+          processSchema(field.schema, currentPath);
+        }
+      }
+    }
+    processSchema(schemaCopy);
+    if (optionsError) {
+      setError(optionsError);
+      return;
+    }
+    const validation = validateSchema(schemaCopy);
     if (validation.isValid) {
       setError(null);
-      onErrorChange(null);
       onLoadingChange(true);
-      
       try {
-        const response = await axios.post<string>('http://localhost:3001/generate-form', schema);
+        const response = await axios.post<string>('http://localhost:3001/generate-form', schemaCopy);
         onFormGenerated(response.data);
       } catch (error) {
         console.error('Error generating form:', error);
         const errorMessage = error instanceof Error ? error.message : 'Failed to generate form';
-        onErrorChange(errorMessage);
+        setError(errorMessage);
       } finally {
         onLoadingChange(false);
       }
     } else {
       setError(validation.error);
-      onErrorChange(validation.error);
     }
-  };
-
-  const handleFieldNameBlurWithRename = (path: string[]) => {
-    handleFieldNameBlur(path, renameField);
-  };
-
-  const handleFieldNameKeyDownWithRename = (e: React.KeyboardEvent, path: string[]) => {
-    handleFieldNameKeyDown(e, path, renameField);
   };
 
     return (
@@ -129,13 +140,6 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
         onUpdateField={updateField}
         onDeleteField={deleteField}
         onRenameField={renameField}
-        editingField={editingField}
-        editingValue={editingValue}
-        onFieldNameChange={handleFieldNameChange}
-        onFieldNameBlur={handleFieldNameBlurWithRename}
-        onFieldNameKeyDown={handleFieldNameKeyDownWithRename}
-        onSetEditingField={setEditingField}
-        onSetEditingValue={setEditingValue}
         onAddField={addField}
         onDragEnd={handleDragEnd}
       />
