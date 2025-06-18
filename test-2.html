@@ -1,0 +1,31 @@
+<div>
+    <label for="birthdate">Date of birth</label>
+    <input type="date" name="birthdate" id="birthdate" >
+    <div>We will send you a gift!</div>
+</div>
+
+
+<div>
+    <label for="gender">Gender</label>
+    <select name="gender" id="gender" ><option value="">Please select</option><option value="0">Male</option><option value="1">Female</option><option value="9">Do not specify</option></select>
+
+</div>
+
+
+<fieldset>
+    <legend>Address</legend>
+
+    <div>
+        <label for="address[zip]">Zip</label>
+        <input type="text" name="address[zip]" id="address[zip]" pattern="[1-9]{1}[0-9]{3}">
+
+    </div>
+
+
+    <div>
+        <label for="address[street]">Street</label>
+        <textarea name="address[street]" id="address[street]" ></textarea>
+
+    </div>
+
+</fieldset>
