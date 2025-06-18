@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { DragEndEvent } from '@dnd-kit/core';
-import { arrayMove } from '@dnd-kit/sortable';
-import { Schema, SchemaEntry } from '../types';
+import { Schema, SchemaEntry } from '../types/schemas';
 import { 
   getNestedSchema, 
   updateNestedSchema, 

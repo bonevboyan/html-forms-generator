@@ -13,7 +13,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { Schema, SchemaEntry } from '../types';
+import { Schema, SchemaEntry } from '../types/schemas';
 import SortableField from './SortableField';
 
 interface SortableFieldsContainerProps {

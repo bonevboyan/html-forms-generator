@@ -1,4 +1,4 @@
-import { Schema, SchemaEntry } from '../types';
+import { Schema, SchemaEntry } from '../types/schemas';
 
 export const getNestedSchema = (schema: Schema, path: string[]): Schema => {
   let current: any = schema;

@@ -8,6 +8,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@heroicons/react": "^2.2.0",
     "@mui/icons-material": "^7.1.1",
     "@mui/material": "^7.1.1",
     "@testing-library/dom": "^10.4.0",
@@ -52,7 +53,6 @@
   "devDependencies": {
     "@types/axios": "^0.9.36",
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.10"
+    "postcss": "^8.5.6"
   }
 }

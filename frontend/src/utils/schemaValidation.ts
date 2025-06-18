@@ -1,4 +1,4 @@
-import { Schema } from '../types';
+import { Schema } from '../types/schemas';
 
 export const validateSchema = (schema: Schema, path: string[] = []): { isValid: boolean; error: string | null } => {
   if (Object.keys(schema).length === 0) {

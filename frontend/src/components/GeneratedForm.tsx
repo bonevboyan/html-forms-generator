@@ -39,20 +39,24 @@ const GeneratedForm: React.FC<GeneratedFormProps> = ({
           Generated Form
         </Typography>
         <Box>
-          {generatedHtml && (
-            <>
-              <Tooltip title="Copy HTML">
-                <IconButton onClick={handleCopyHtml} color="primary">
-                  <ContentCopyIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Reset">
-                <IconButton onClick={onReset} color="secondary">
-                  <RefreshIcon />
-                </IconButton>
-              </Tooltip>
-            </>
-          )}
+          <Tooltip title="Copy HTML">
+            <IconButton 
+              onClick={handleCopyHtml} 
+              color="primary"
+              disabled={!generatedHtml}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Reset">
+            <IconButton 
+              onClick={onReset} 
+              color="secondary"
+              disabled={!generatedHtml}
+            >
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </Box>
 
@@ -74,7 +78,8 @@ const GeneratedForm: React.FC<GeneratedFormProps> = ({
             sx={{
               '& label': { display: 'block', mb: 1 },
               '& input, & select, & textarea': {
-                width: '100%',
+                width: 'calc(100% - 16px)',
+                maxWidth: '500px',
                 mb: 2,
                 p: 1,
                 border: '1px solid #ccc',
@@ -89,6 +94,7 @@ const GeneratedForm: React.FC<GeneratedFormProps> = ({
                 p: 2,
                 mb: 2,
                 borderRadius: '4px',
+                maxWidth: '500px',
               },
               '& legend': {
                 px: 1,
@@ -99,6 +105,7 @@ const GeneratedForm: React.FC<GeneratedFormProps> = ({
                 fontSize: '0.875rem',
                 mt: -1,
                 mb: 2,
+                maxWidth: '500px',
               },
             }}
             dangerouslySetInnerHTML={{ __html: generatedHtml }}

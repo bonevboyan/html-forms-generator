@@ -6,7 +6,6 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Typography,
   Paper,
   IconButton,
   Tooltip,
@@ -25,7 +24,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { SchemaEntry } from '../types';
+import { SchemaEntry } from '../types/schemas';
 
 interface SortableFieldProps {
   id: string;

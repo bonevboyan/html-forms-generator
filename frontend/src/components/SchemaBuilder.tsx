@@ -6,15 +6,16 @@ import {
   Alert,
   Tooltip,
   Divider,
+  Paper,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import axios from 'axios';
-import { Schema } from '../types';
 import SortableFieldsContainer from './SortableFieldsContainer';
 import { validateSchema } from '../utils/schemaValidation';
 import { useSchemaManager } from '../hooks/useSchemaManager';
 import { useFieldEditing } from '../hooks/useFieldEditing';
+import { Schema } from '../types/schemas';
 
 interface SchemaBuilderProps {
   onFormGenerated: (html: string) => void;
@@ -112,6 +113,17 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
         </Alert>
       )}
 
+      {Object.keys(schema).length === 0 && (
+        <Paper sx={{ p: 3, mb: 3 }}>
+          <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+            <Typography>
+              Press the plus icon to add your first field.
+              To generate your form, press the play button.
+            </Typography>
+          </Box>
+        </Paper>
+      )}
+
       <SortableFieldsContainer
         schema={schema}
         parentPath={[]}
@@ -128,8 +140,6 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
         onAddField={addField}
         onDragEnd={handleDragEnd}
       />
-
-      <Divider sx={{ my: 3 }} />
     </Box>
   );
 };
