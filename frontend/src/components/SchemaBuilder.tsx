@@ -74,7 +74,7 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
       setError(null);
       onLoadingChange(true);
       try {
-        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'https://html-forms-generator.onrender.com';
         const response = await axios.post<string>(`${backendUrl}/generate-form`, schemaCopy);
         onFormGenerated(response.data);
       } catch (error) {
