@@ -36,7 +36,6 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
 
 
   const handleSubmit = async () => {
-    // Parse and validate select options from optionsRaw before validation
     const schemaCopy = JSON.parse(JSON.stringify(schema));
     let optionsError: string | null = null;
     function processSchema(s: any, path: string[] = []) {
@@ -75,7 +74,8 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
       setError(null);
       onLoadingChange(true);
       try {
-        const response = await axios.post<string>('http://localhost:3001/generate-form', schemaCopy);
+        const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3001';
+        const response = await axios.post<string>(`${backendUrl}/generate-form`, schemaCopy);
         onFormGenerated(response.data);
       } catch (error) {
         console.error('Error generating form:', error);

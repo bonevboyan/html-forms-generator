@@ -17,7 +17,6 @@ export const updateNestedSchema = (schema: Schema, path: string[], newSchema: Sc
   const current = { ...schema };
   let currentLevel: any = current;
 
-  // Navigate to the correct level
   for (const key of path.slice(0, -1)) {
     if (!currentLevel[key]) {
       currentLevel[key] = { type: 'schema', schema: {} };
@@ -25,7 +24,6 @@ export const updateNestedSchema = (schema: Schema, path: string[], newSchema: Sc
     currentLevel = currentLevel[key].schema;
   }
 
-  // Update the final level
   const lastKey = path[path.length - 1];
   if (!currentLevel[lastKey]) {
     currentLevel[lastKey] = { type: 'schema', schema: {} };
