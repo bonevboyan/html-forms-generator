@@ -21,13 +21,11 @@ export const useSchemaManager = () => {
     const newName = generateUniqueFieldName(parentSchema);
     newField.label = newName.charAt(0).toUpperCase() + newName.slice(1);
 
-    // Create new schema with the field at the top
     const newSchema = {
       [newName]: newField,
       ...parentSchema
     };
 
-    // Update the schema at the correct level
     const updatedSchema = updateNestedSchema(schema, parentPath, newSchema);
     setSchema(updatedSchema);
   };
@@ -36,7 +34,6 @@ export const useSchemaManager = () => {
     const [fieldKey, ...parentPath] = path.reverse();
     const parentSchema = getNestedSchema(schema, parentPath);
     
-    // Initialize schema if changing to schema type
     if (value.type === 'schema' && !value.schema) {
       value.schema = {};
     }
@@ -68,12 +65,10 @@ export const useSchemaManager = () => {
     const [oldKey, ...parentPath] = oldPath.reverse();
     const parentSchema = getNestedSchema(schema, parentPath);
     
-    // Check if the new name already exists
     if (parentSchema[newName]) {
       throw new Error(`Field name "${newName}" already exists at this level`);
     }
 
-    // Create new schema with renamed field
     const { [oldKey]: field, ...restSchema } = parentSchema;
     const newSchema = {
       ...restSchema,

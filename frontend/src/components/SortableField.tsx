@@ -59,7 +59,6 @@ const SortableField: React.FC<SortableFieldProps> = ({
     isDragging,
   } = useSortable({ id });
 
-  // Local editing state for this field
   const {
     editingField,
     editingValue,
@@ -80,7 +79,6 @@ const SortableField: React.FC<SortableFieldProps> = ({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  // Wrap the handlers to use the correct path and rename function
   const handleFieldNameBlurWithRename = () => {
     handleFieldNameBlur(currentPath, onRenameField);
   };
@@ -147,7 +145,6 @@ const SortableField: React.FC<SortableFieldProps> = ({
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
-            // Focus the next field
             const form = e.currentTarget.closest('form');
             if (form) {
               const inputs = Array.from(form.querySelectorAll('input, textarea, select'));
@@ -170,7 +167,6 @@ const SortableField: React.FC<SortableFieldProps> = ({
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             e.preventDefault();
-            // Focus the next field
             const form = e.currentTarget.closest('form');
             if (form) {
               const inputs = Array.from(form.querySelectorAll('input, textarea, select'));

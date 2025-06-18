@@ -14,7 +14,6 @@ export const useFieldEditing = () => {
       try {
         onRenameField(path, newName);
       } catch (error) {
-        // Handle error (could be displayed in UI)
         console.error('Failed to rename field:', error);
       }
     }

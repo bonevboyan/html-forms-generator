@@ -13,7 +13,6 @@ import axios from 'axios';
 import SortableFieldsContainer from './SortableFieldsContainer';
 import { validateSchema } from '../utils/schemaValidation';
 import { useSchemaManager } from '../hooks/useSchemaManager';
-import { useFieldEditing } from '../hooks/useFieldEditing';
 
 interface SchemaBuilderProps {
   onFormGenerated: (html: string) => void;

@@ -22,7 +22,6 @@ function generateInput(name: string, entry: SchemaEntry): string {
     case 'select':
       const selectEntry = entry as any
       const options = selectEntry.options.map((opt: any) => {
-        // Handle both old tuple format and new SelectOption format
         if (Array.isArray(opt)) {
           return `<option value="${opt[0]}">${opt[1]}</option>`
         }
