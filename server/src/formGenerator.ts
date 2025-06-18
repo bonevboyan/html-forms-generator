@@ -21,9 +21,13 @@ function generateInput(name: string, entry: SchemaEntry): string {
   switch (type) {
     case 'select':
       const selectEntry = entry as any
-      const options = selectEntry.options.map(([value, label]: [string, string]) => 
-        `<option value="${value}">${label}</option>`
-      ).join('')
+      const options = selectEntry.options.map((opt: any) => {
+        // Handle both old tuple format and new SelectOption format
+        if (Array.isArray(opt)) {
+          return `<option value="${opt[0]}">${opt[1]}</option>`
+        }
+        return `<option value="${opt.value}">${opt.label}</option>`
+      }).join('')
       const placeholder = selectEntry.placeholder ? 
         `<option value="">${selectEntry.placeholder}</option>` : ''
       input = `<select name="${name}" id="${name}" ${attrs} style="max-width: 400px;">${placeholder}${options}</select>`
