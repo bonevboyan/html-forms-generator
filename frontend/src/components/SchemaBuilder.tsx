@@ -5,7 +5,6 @@ import {
   IconButton,
   Alert,
   Tooltip,
-  Divider,
   Paper,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
@@ -80,7 +79,7 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
     handleFieldNameKeyDown(e, path, renameField);
   };
 
-  return (
+    return (
     <Box sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4">
@@ -105,7 +104,7 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
             </IconButton>
           </Tooltip>
         </Box>
-      </Box>
+          </Box>
 
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
@@ -120,7 +119,7 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
               Press the plus icon to add your first field.
               To generate your form, press the play button.
             </Typography>
-          </Box>
+      </Box>
         </Paper>
       )}
 

@@ -14,7 +14,6 @@ export const getNestedSchema = (schema: Schema, path: string[]): Schema => {
 export const updateNestedSchema = (schema: Schema, path: string[], newSchema: Schema): Schema => {
   if (path.length === 0) return newSchema;
 
-  const [currentKey, ...remainingPath] = path;
   const current = { ...schema };
   let currentLevel: any = current;
 
