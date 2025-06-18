@@ -7,7 +7,7 @@ function generateLabel(name: string, label?: string): string {
 }
 
 function generateHint(hint: string): string {
-  return `<div>${hint}</div>`
+  return `<div style="margin-top: -0.5rem; margin-bottom: 1rem; font-style: italic; color: #666;">Hint: ${hint}</div>`
 }
 
 function generateInput(name: string, entry: SchemaEntry): string {
@@ -26,13 +26,13 @@ function generateInput(name: string, entry: SchemaEntry): string {
       ).join('')
       const placeholder = selectEntry.placeholder ? 
         `<option value="">${selectEntry.placeholder}</option>` : ''
-      input = `<select name="${name}" id="${name}" ${attrs}>${placeholder}${options}</select>`
+      input = `<select name="${name}" id="${name}" ${attrs} style="max-width: 400px;">${placeholder}${options}</select>`
       break
     case 'textarea':
-      input = `<textarea name="${name}" id="${name}" ${attrs}></textarea>`
+      input = `<textarea name="${name}" id="${name}" ${attrs} style="max-width: 400px;"></textarea>`
       break
     default:
-      input = `<input type="${type}" name="${name}" id="${name}" ${attrs}>`
+      input = `<input type="${type}" name="${name}" id="${name}" ${attrs} style="max-width: 400px;">`
   }
 
   return `

@@ -1,79 +1,59 @@
 # HTML Forms Generator
 
-A TypeScript Express application that generates HTML forms from JSON schemas.
+This project is a full-stack application for generating HTML forms from a JSON schema. It consists of a React frontend and an Express/TypeScript backend.
 
-## Installation
+## Project Structure
 
-1. Clone the repository
-2. Install dependencies:
-```bash
-npm install
+```
+html-forms-generator/
+│
+├── frontend/         # React frontend (TypeScript, Material-UI)
+│   └── ...
+│
+├── server/           # Express backend (TypeScript)
+│   ├── src/          # Backend source code
+│   ├── package.json  # Backend dependencies
+│   ├── tsconfig.json # Backend TypeScript config
+│   └── ...
+│
+├── README.md         # Project documentation (this file)
+└── ...
 ```
 
-## Development
+## Getting Started
 
-To run the application in development mode:
-```bash
-npm run dev
-```
+### Backend (Server)
 
-## Building
+1. Install dependencies:
+   ```sh
+   cd server
+   npm install
+   ```
+2. Start the backend server:
+   ```sh
+   npm run dev
+   ```
+   The backend will run on [http://localhost:3000](http://localhost:3000) or the port specified in your environment.
 
-To build the application:
-```bash
-npm run build
-```
+### Frontend (React App)
 
-## Running
+1. Install dependencies:
+   ```sh
+   cd frontend
+   npm install
+   ```
+2. Start the frontend app:
+   ```sh
+   npm start
+   ```
+   The frontend will run on [http://localhost:3000](http://localhost:3000) by default, or the port specified in your `.env` file.
 
-To run the built application:
-```bash
-npm start
-```
+## Features
+- Build complex, nested form schemas visually
+- Real-time HTML form preview
+- Supports text, email, date, select, textarea, and nested schemas
+- Copy generated HTML to clipboard
+- Modern Material-UI design
 
-## Usage
-
-Send a POST request to `/generate-form` with a JSON schema in the request body. The server will return the generated HTML form.
-
-Example request:
-```bash
-curl -X POST http://localhost:3000/generate-form \
-  -H "Content-Type: application/json" \
-  -d '{
-    "birthdate": {
-      "type": "date",
-      "label": "Date of birth",
-      "hint": "We will send you a gift!"
-    },
-    "gender": {
-      "type": "select",
-      "options": [[0, "Male"], [1, "Female"], [9, "Do not specify"]],
-      "placeholder": "Please select"
-    },
-    "address": {
-      "type": "schema",
-      "schema": {
-        "zip": {
-          "type": "text",
-          "pattern": "[1-9]{1}[0-9]{3}"
-        },
-        "street": {
-          "type": "textarea"
-        }
-      }
-    }
-  }'
-```
-
-## Schema Format
-
-Each schema entry should have:
-- `type`: The type of input (text, date, select, textarea, schema)
-- `label` (optional): The label text for the input
-- `hint` (optional): A hint text displayed below the input
-- For select inputs:
-  - `options`: Array of [value, label] pairs
-  - `placeholder` (optional): Placeholder text
-- For schema type:
-  - `schema`: Nested schema object
-- Any other attributes will be passed directly to the HTML element 
+## License
+MIT 
