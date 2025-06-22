@@ -1,4 +1,5 @@
 import { Router, Response } from 'express';
+import { randomUUID } from 'crypto';
 import prisma from '../db';
 import { authenticate, AuthenticatedRequest } from '../middleware/authenticate';
 import { validateSchema } from '../utils/schemaValidation';
@@ -14,7 +15,7 @@ router.post('/', authenticate, async (req: AuthenticatedRequest, res: Response) 
   if (!validation.isValid) {
     return res.status(400).json({ error: validation.error });
   }
-  const publicId = crypto.randomUUID();
+  const publicId = randomUUID();
   const form = await prisma.form.create({
     data: {
       owner: req.user.id,
