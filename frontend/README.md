@@ -1,13 +1,27 @@
 # HTML Forms Generator – Frontend
 
-This is the React frontend for the HTML Forms Generator project. It lets you visually build a form schema and preview the generated HTML form in real time.
+The React frontend for the HTML Forms Generator project, deployed at [html-forms-generator-zeta.vercel.app](https://html-forms-generator-zeta.vercel.app). Build, share, and manage forms with a modern, intuitive interface.
 
 ## Features
-- Visual schema builder (drag-and-drop, nested fields)
-- Supports text, email, date, select, textarea, and nested schemas
-- Copy generated HTML to clipboard
-- Modern Material-UI design
-- Connects to a backend API for HTML generation
+- **Visual Form Builder:**
+  - Drag-and-drop field organization with position tracking
+  - Support for text, email, date, select, textarea fields
+  - Nested schemas for complex form structures
+  - Field hints and descriptions
+  - Real-time form preview
+- **Form Management:**
+  - Save and organize your forms
+  - Generate public sharing links
+  - View and manage form responses
+  - Response table with proper date formatting
+- **Modern UI/UX:**
+  - Material-UI components and styling
+  - Responsive design
+  - Loading states and error handling
+  - Success notifications and redirects
+- **Authentication:**
+  - Secure login/register with Supabase
+  - Protected routes for form management
 
 ## Getting Started
 
@@ -36,10 +50,17 @@ npm run build
 ```
 The static site will be output to the `build/` directory.
 
-## Usage
-- Use the Schema Builder to add and configure fields.
-- Click the play button to generate the HTML form.
-- Copy the generated HTML with the copy button.
+## Deployment
+The frontend is deployed on Vercel at [html-forms-generator-zeta.vercel.app](https://html-forms-generator-zeta.vercel.app).
+
+To deploy your own version:
+1. Fork the repository
+2. Connect your fork to Vercel
+3. Configure the following environment variables:
+   ```
+   REACT_APP_API_URL=https://your-backend-url.com
+   ```
+4. Deploy! Vercel will automatically build and deploy your changes
 
 ## Project Structure
 ```

@@ -1,12 +1,47 @@
 # HTML Forms Generator
 
-A full-stack app for visually building JSON schemas and generating HTML forms. Built with React (frontend) and Express/TypeScript (backend).
+A full-stack application for visually building, sharing, and collecting form responses. Built with React, Material-UI, TypeScript (frontend) and Express/TypeScript/Prisma (backend).
+
+## Live Demo
+- **Frontend:** [html-forms-generator-zeta.vercel.app](https://html-forms-generator-zeta.vercel.app)
+- **Backend API:** [html-forms-generator.onrender.com](https://html-forms-generator.onrender.com)
+
+## Features
+- **Visual Schema Builder:**
+  - Drag-and-drop field organization
+  - Support for text, email, date, select, textarea, and nested schemas
+  - Field ordering with position tracking
+  - Field hints and descriptions
+- **Form Management:**
+  - Save forms with unique public URLs
+  - Share forms publicly
+  - Collect and view form responses
+  - Clean separation of API logic into hooks
+- **Modern UI/UX:**
+  - Material-UI components
+  - Response viewing with proper date formatting
+  - Improved form styling and field spacing
+  - Validation hints
+- **Security & Authentication:**
+  - Supabase authentication
+  - Protected form management routes
+  - Public/private form separation
 
 ## Project Structure
 ```
 html-forms-generator/
 ├── frontend/   # React frontend (Material-UI, TypeScript)
-├── server/     # Express backend (TypeScript)
+│   ├── src/
+│   │   ├── components/  # React components
+│   │   ├── hooks/       # Custom hooks (auth, forms, etc.)
+│   │   ├── types/       # TypeScript types
+│   │   └── utils/       # Helper functions
+├── server/     # Express backend (TypeScript, Prisma)
+│   ├── src/
+│   │   ├── routes/      # API routes
+│   │   ├── middleware/  # Auth middleware
+│   │   └── utils/       # Form generation, validation
+│   └── prisma/          # Database schema and migrations
 └── README.md   # This file
 ```
 
