@@ -2,9 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, IconButton, Paper, Tooltip, CircularProgress, Snackbar } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShareIcon from '@mui/icons-material/Share';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import { useNavigate } from 'react-router-dom';
 import { useFormsApi } from '../hooks/useFormsApi';
 
 const MyForms: React.FC = () => {
+  const navigate = useNavigate();
   const [forms, setForms] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState<string | null>(null);
@@ -34,6 +37,9 @@ const MyForms: React.FC = () => {
     navigator.clipboard.writeText(url);
     setSnackbar('Share link copied!');
   };
+  const handleViewResponses = (formId: string) => {
+    navigate(`/form/${formId}/responses`);
+  };
 
   if (loading) return <Box sx={{ textAlign: 'center', mt: 4 }}><CircularProgress /></Box>;
 
@@ -42,17 +48,19 @@ const MyForms: React.FC = () => {
       <Typography variant="h4" mb={2}>My Forms</Typography>
       {forms.length === 0 && <Typography>No forms yet.</Typography>}
       {forms.map(form => (
-        <Paper key={form.id} sx={{ p: 2, mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box>
+        <Paper key={form.id} sx={{ p: 2, mb: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>          <Box>
             <Typography fontWeight={600}>{form.title}</Typography>
             <Typography variant="body2" color="text.secondary">ID: {form.id}</Typography>
           </Box>
-          <Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Tooltip title="Delete">
               <IconButton onClick={() => handleDelete(form.id)}><DeleteIcon /></IconButton>
             </Tooltip>
             <Tooltip title="Share">
               <IconButton onClick={() => handleShare(form.publicId)}><ShareIcon /></IconButton>
+            </Tooltip>
+            <Tooltip title="View Responses">
+              <IconButton onClick={() => handleViewResponses(form.id)}><FormatListBulletedIcon /></IconButton>
             </Tooltip>
           </Box>
         </Paper>

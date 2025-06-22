@@ -49,12 +49,31 @@ export const useFormsApi = () => {
   const generateForm = async (schema: any) => {
     const res = await fetch(`${API_URL}/forms/generate-form`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(schema),
     });
     if (!res.ok) throw new Error((await res.json()).error || 'Failed to generate form');
     return res.text();
   };
 
-  return { getForms, createForm, updateForm, deleteForm, generateForm };
-}; 
+  const getForm = async (id: string) => {
+    const res = await fetch(`${API_URL}/forms/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Failed to get form');
+    return res.json();
+  };
+
+  const getResponses = async (formId: string) => {
+    const res = await fetch(`${API_URL}/forms/${formId}/responses`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Failed to get responses');
+    return res.json();
+  };
+
+  return { getForms, createForm, updateForm, deleteForm, generateForm, getForm, getResponses };
+};

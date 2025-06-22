@@ -6,6 +6,7 @@ import LandingPage from './components/LandingPage';
 import MyForms from './components/MyForms';
 import Home from './components/Home';
 import SharedForm from './components/SharedForm';
+import FormResponses from './components/FormResponses';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 
 function AppRoutes() {
@@ -19,6 +20,7 @@ function AppRoutes() {
         <Route path="/login" element={<LoginRegister />} />
         <Route path="/my-forms" element={isLoggedIn ? <MyForms /> : <Navigate to="/" />} />
         <Route path="/form/:formId" element={<SharedForm />} />
+        <Route path="/form/:formId/responses" element={isLoggedIn ? <FormResponses /> : <Navigate to="/" />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
