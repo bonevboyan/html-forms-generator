@@ -7,6 +7,7 @@ export interface BaseSchemaEntry {
   type: string
   label?: string
   hint?: string
+  position: number
   [key: string]: any
 }
 

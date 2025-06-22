@@ -17,11 +17,18 @@ import {
 } from '@mui/material';
 import { useFormsApi } from '../hooks/useFormsApi';
 
+interface FormSchema {
+  type: string;
+  label?: string;
+  position: number;
+  [key: string]: any;
+}
+
 interface Response {
   id: string;
   formId: string;
   response: Record<string, any>;
-  createdAt: string;
+  submittedAt: string;
 }
 
 const FormResponses: React.FC = () => {
@@ -78,14 +85,27 @@ const FormResponses: React.FC = () => {
 
   if (error) {
     return <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>;
-  }
+  }  // Function to get all fields recursively including nested schema fields
+  const getAllFields = (schema: Record<string, FormSchema>, prefix = ''): { key: string, label: string, position: number }[] => {
+    return Object.entries(schema).flatMap(([key, field]) => {
+      if (field.type === 'schema') {
+        // For schema fields, recursively get all nested fields
+        return getAllFields(field.schema, `${prefix}${key}[`).map(f => ({
+          ...f,
+          key: f.key.endsWith(']') ? f.key : `${f.key}]`,
+          position: field.position * 1000 + f.position // Maintain hierarchical ordering
+        }));
+      }
+      return [{
+        key: prefix ? `${prefix}${key}]` : key,
+        label: field.label || key,
+        position: field.position
+      }];
+    });
+  };
 
-  // Get all unique fields from responses
-  const fields = new Set<string>();
-  responses.forEach(response => {
-    Object.keys(response.response).forEach(key => fields.add(key));
-  });
-  const fieldArray = Array.from(fields);
+  // Get all fields including nested ones and sort by position
+  const fields = getAllFields(form?.schema || {}).sort((a, b) => a.position - b.position);
 
   return (
     <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 4, px: 2 }}>
@@ -106,21 +126,24 @@ const FormResponses: React.FC = () => {
           <Table sx={{ minWidth: 650 }}>
             <TableHead>
               <TableRow>
-                <TableCell>Submission Date</TableCell>
-                {fieldArray.map(field => (
-                  <TableCell key={field}>{field}</TableCell>
+                <TableCell>Submission Date</TableCell>                {fields.map(field => (
+                  <TableCell key={field.key}>{field.label}</TableCell>
                 ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {responses.map(response => (
-                <TableRow key={response.id}>
-                  <TableCell>
-                    {new Date(response.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  {fieldArray.map(field => (
-                    <TableCell key={field}>
-                      {response.response[field] || ''}
+                <TableRow key={response.id}>                  <TableCell>
+                    {new Date(response.submittedAt).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}
+                  </TableCell>                  {fields.map(field => (
+                    <TableCell key={field.key}>
+                      {response.response[field.key] || ''}
                     </TableCell>
                   ))}
                 </TableRow>

@@ -42,18 +42,20 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
   console.log('[SchemaBuilder] Render', { title, schema });
 
   const addField = (parentPath: string[] = []) => {
+    const parentSchema = getNestedSchema(schema, parentPath);
+    const maxPosition = Object.values(parentSchema).reduce((max, field) => 
+      Math.max(max, (field.position ?? 0)), -1);
+    const newName = generateUniqueFieldName(parentSchema);
+
     const newField: SchemaEntry = {
       type: 'text',
-      label: '',
+      label: newName.charAt(0).toUpperCase() + newName.slice(1),
+      position: maxPosition + 1,
     };
 
-    const parentSchema = getNestedSchema(schema, parentPath);
-    const newName = generateUniqueFieldName(parentSchema);
-    newField.label = newName.charAt(0).toUpperCase() + newName.slice(1);
-
     const newSchema = {
-      [newName]: newField,
-      ...parentSchema
+      ...parentSchema,
+      [newName]: newField
     };
 
     const updatedSchema = updateNestedSchema(schema, parentPath, newSchema);
@@ -101,8 +103,8 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
 
     const { [oldKey]: field, ...restSchema } = parentSchema;
     const newSchema = {
-      ...restSchema,
-      [newName]: field
+      [newName]: field,
+      ...restSchema
     };
 
     const updatedSchema = updateNestedSchema(schema, parentPath, newSchema);

@@ -18,7 +18,7 @@ import { API_URL } from '../config';
 // Styled component for form container
 const StyledFormContainer = styled(Box)(({ theme }) => ({
   '& input, & textarea': {
-    width: '100%',
+    width: '95%',
     padding: theme.spacing(1.5),
     marginBottom: theme.spacing(2),
     border: '1px solid',
@@ -35,7 +35,7 @@ const StyledFormContainer = styled(Box)(({ theme }) => ({
     }
   },
   '& select': {
-    width: '100%',
+    width: '95%',
     height: '42px',
     padding: theme.spacing(0.75, 1.5),
     marginBottom: theme.spacing(2),

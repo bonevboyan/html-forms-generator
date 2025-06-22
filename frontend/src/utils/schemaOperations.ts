@@ -49,14 +49,20 @@ export const generateUniqueFieldName = (parentSchema: Schema): string => {
 export const reorderFields = (schema: Schema, parentPath: string[], oldIndex: number, newIndex: number): Schema => {
   const parentSchema = getNestedSchema(schema, parentPath);
   const fieldEntries = Object.entries(parentSchema);
-  const reorderedEntries = fieldEntries.map((entry, index) => {
-    if (index === oldIndex) {
-      return fieldEntries[newIndex];
-    } else if (index === newIndex) {
-      return fieldEntries[oldIndex];
-    }
-    return entry;
-  });
+
+  // Sort entries by current position before reordering
+  fieldEntries.sort((a, b) => (a[1].position ?? 0) - (b[1].position ?? 0));
+
+  // Move the entry from oldIndex to newIndex
+  const [movedEntry] = fieldEntries.splice(oldIndex, 1);
+  fieldEntries.splice(newIndex, 0, movedEntry);
+
+  // Update positions for all fields
+  const reorderedEntries = fieldEntries.map(([key, value], index) => [
+    key,
+    { ...value, position: index }
+  ]);
+
   const newSchema = Object.fromEntries(reorderedEntries);
   return updateNestedSchema(schema, parentPath, newSchema);
 }; 

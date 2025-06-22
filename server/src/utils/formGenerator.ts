@@ -47,7 +47,7 @@ function generateInput(name: string, entry: SchemaEntry): string {
   `;
 }
 
-function generateFieldset(name: string, schema: Schema): string {
+function generateFieldset(name: string, schema: Schema, hint?: string): string {
   const legend = name.charAt(0).toUpperCase() + name.slice(1);
   const fields = Object.entries(schema)
     .map(([fieldName, entry]) => generateFormField(`${name}[${fieldName}]`, entry))
@@ -56,6 +56,7 @@ function generateFieldset(name: string, schema: Schema): string {
   return `
     <fieldset>
       <legend>${legend}</legend>
+      ${hint ? generateHint(hint) : ''}
       ${fields}
     </fieldset>
   `;
@@ -63,13 +64,14 @@ function generateFieldset(name: string, schema: Schema): string {
 
 function generateFormField(name: string, entry: SchemaEntry): string {
   if (entry.type === 'schema') {
-    return generateFieldset(name, (entry as any).schema);
+    return generateFieldset(name, (entry as any).schema, entry.hint);
   }
   return generateInput(name, entry);
 }
 
 export function generateForm(schema: Schema): string {
   return Object.entries(schema)
+    .sort((a, b) => (a[1].position ?? 0) - (b[1].position ?? 0))
     .map(([name, entry]) => generateFormField(name, entry))
     .join('\n');
 } 

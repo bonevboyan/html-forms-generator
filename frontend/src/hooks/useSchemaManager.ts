@@ -12,12 +12,15 @@ export const useSchemaManager = () => {
   const [schema, setSchema] = useState<Schema>({});
 
   const addField = (parentPath: string[] = []) => {
+    const parentSchema = getNestedSchema(schema, parentPath);
+    const maxPosition = Object.values(parentSchema).reduce((max, field) => 
+      Math.max(max, (field.position || 0)), -1);
+
     const newField: SchemaEntry = {
       type: 'text',
       label: '',
+      position: maxPosition + 1,
     };
-
-    const parentSchema = getNestedSchema(schema, parentPath);
     const newName = generateUniqueFieldName(parentSchema);
     newField.label = newName.charAt(0).toUpperCase() + newName.slice(1);
 

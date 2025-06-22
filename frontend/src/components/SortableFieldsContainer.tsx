@@ -42,7 +42,8 @@ const SortableFieldsContainer: React.FC<SortableFieldsContainerProps> = ({
     })
   );
 
-  const fieldEntries = Object.entries(schema);
+  const fieldEntries = Object.entries(schema).sort(([, a], [, b]) => 
+    (a.position ?? 0) - (b.position ?? 0));
 
   return (
     <DndContext
