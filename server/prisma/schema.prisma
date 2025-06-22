@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Form {
+  id        String    @id @default(uuid())
+  owner     String    // Supabase user id (uuid)
+  title     String
+  schema    Json
+  publicId  String    @unique
+  createdAt DateTime  @default(now())
+  responses Response[]
+}
+
+model Response {
+  id         String   @id @default(uuid())
+  form       Form     @relation(fields: [formId], references: [id])
+  formId     String
+  response   Json
+  submittedAt DateTime @default(now())
+} 
