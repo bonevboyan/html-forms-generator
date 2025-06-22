@@ -3,16 +3,86 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   Container,
-  Box,
   Typography,
   Button,
   CircularProgress,
   Paper,
   Alert,
-  Snackbar
+  Snackbar,
+  Box,
+  styled
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { API_URL } from '../config';
+
+// Styled component for form container
+const StyledFormContainer = styled(Box)(({ theme }) => ({
+  '& input, & textarea': {
+    width: '100%',
+    padding: theme.spacing(1.5),
+    marginBottom: theme.spacing(2),
+    border: '1px solid',
+    borderColor: theme.palette.divider,
+    borderRadius: theme.shape.borderRadius,
+    fontSize: '1rem',
+    fontFamily: 'inherit',
+    backgroundColor: theme.palette.background.paper,
+    transition: 'all 0.2s ease-in-out',
+    '&:focus': {
+      outline: 'none',
+      borderColor: theme.palette.primary.main,
+      boxShadow: `0 0 0 2px ${theme.palette.primary.main}25`,
+    }
+  },
+  '& select': {
+    width: '100%',
+    height: '42px',
+    padding: theme.spacing(0.75, 1.5),
+    marginBottom: theme.spacing(2),
+    border: '1px solid',
+    borderColor: theme.palette.divider,
+    borderRadius: theme.shape.borderRadius,
+    fontSize: '1rem',
+    fontFamily: 'inherit',
+    backgroundColor: theme.palette.background.paper,
+    transition: 'all 0.2s ease-in-out',
+    cursor: 'pointer',
+    appearance: 'auto',
+    '&:focus': {
+      outline: 'none',
+      borderColor: theme.palette.primary.main,
+      boxShadow: `0 0 0 2px ${theme.palette.primary.main}25`,
+    }
+  },
+  '& div': {
+    marginBottom: theme.spacing(3)
+  },
+  '& label': {
+    display: 'block',
+    marginBottom: theme.spacing(1),
+    fontWeight: 500,
+    color: theme.palette.text.primary
+  },
+  '& .hint, & .form-hint': {
+    color: theme.palette.text.secondary,
+    fontSize: '0.875rem',
+    marginTop: theme.spacing(0.5),
+    marginLeft: theme.spacing(0.5),
+    marginBottom: theme.spacing(1),
+    fontStyle: 'italic'
+  },
+  '& fieldset': {
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: theme.shape.borderRadius,
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+  },
+  '& legend': {
+    padding: `0 ${theme.spacing(1)}`,
+    fontWeight: 500,
+    color: theme.palette.text.primary,
+  }
+}));
 
 interface FormData {
   id: string;
@@ -57,13 +127,14 @@ const SharedForm: React.FC = () => {
   useEffect(() => {
     if (formData?.html && formContainerRef.current) {
       // First render the HTML
-      formContainerRef.current.innerHTML = formData.html;
-
-      // Then attach event handlers to all form inputs
-      const inputs = formContainerRef.current.querySelectorAll('input, select, textarea');
+      formContainerRef.current.innerHTML = formData.html;      // Then attach event handlers to all form inputs
+      const inputs = formContainerRef.current.querySelectorAll('input, textarea');
+      const selects = formContainerRef.current.querySelectorAll('select');
+      
+      // Handle text inputs and textareas
       inputs.forEach(input => {
         const handleChange = (e: Event) => {
-          const target = e.target as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+          const target = e.target as HTMLInputElement | HTMLTextAreaElement;
           console.log('Input change:', { name: target.name, value: target.value });
           setFormValues(prev => ({
             ...prev,
@@ -73,6 +144,20 @@ const SharedForm: React.FC = () => {
 
         input.addEventListener('change', handleChange);
         input.addEventListener('input', handleChange);
+      });
+
+      // Handle select elements separately
+      selects.forEach(select => {
+        const handleSelectChange = (e: Event) => {
+          const target = e.target as HTMLSelectElement;
+          console.log('Select change:', { name: target.name, value: target.value });
+          setFormValues(prev => ({
+            ...prev,
+            [target.name]: target.value
+          }));
+        };
+
+        select.addEventListener('change', handleSelectChange);
       });
     }
   }, [formData?.html]); // Only run when HTML changes
@@ -159,30 +244,7 @@ const SharedForm: React.FC = () => {
           <Alert severity="error" sx={{ mb: 3 }}>{submitError}</Alert>
         )}
         
-        <form id="shared-form" onSubmit={handleSubmit}>
-          <Box sx={{ 
-            '& .form-group': { mb: 3 },
-            '& label': { 
-              display: 'block', 
-              mb: 1, 
-              fontWeight: 'medium' 
-            },
-            '& .form-control': { 
-              width: '100%', 
-              p: 1.5, 
-              border: '1px solid #ccc', 
-              borderRadius: '4px',
-              fontSize: '1rem'
-            },
-            '& .form-hint': { 
-              mt: 0.5, 
-              fontSize: '0.875rem', 
-              color: 'text.secondary', 
-              fontStyle: 'italic' 
-            } 
-          }}>
-            <div ref={formContainerRef} />
-          </Box>
+        <form id="shared-form" onSubmit={handleSubmit}>          <StyledFormContainer ref={formContainerRef} />
           
           <Box sx={{ mt: 4, textAlign: 'center' }}>
             <Button 
