@@ -26,10 +26,8 @@ function generateInput(name: string, entry: SchemaEntry): string {
           return `<option value="${opt[0]}">${opt[1]}</option>`;
         }
         return `<option value="${opt.value}">${opt.label}</option>`;
-      }).join('');
-      const placeholder = selectEntry.placeholder ? 
-        `<option value="">${selectEntry.placeholder}</option>` : '';
-      input = `<select name="${name}" id="${name}" ${attrs}>${placeholder}${options}</select>`;
+      }).join('');      const emptyOption = `<option value="">${selectEntry.placeholder || 'Select...'}</option>`;
+      input = `<select name="${name}" id="${name}" ${attrs}>${emptyOption}${options}</select>`;
       break;
     case 'textarea':
       input = `<textarea name="${name}" id="${name}" ${attrs}></textarea>`;
