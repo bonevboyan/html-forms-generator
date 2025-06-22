@@ -102,5 +102,6 @@ export const useSchemaManager = () => {
     deleteField,
     renameField,
     handleDragEnd,
+    setSchema,
   };
 }; 

@@ -3,6 +3,7 @@ import prisma from '../db';
 import { authenticate, AuthenticatedRequest } from '../middleware/authenticate';
 import { validateSchema } from '../utils/schemaValidation';
 import { generateForm } from '../utils/formGenerator';
+import { Schema } from '../types';
 
 const router = Router();
 
@@ -53,7 +54,16 @@ router.get('/:id', authenticate, async (req: AuthenticatedRequest, res: Response
 router.get('/public/:publicId', async (req, res) => {
   const form = await prisma.form.findUnique({ where: { publicId: req.params.publicId } });
   if (!form) return res.status(404).json({ error: 'Not found' });
-  res.json(form);
+  
+  // Generate HTML from the schema
+  const html = generateForm(form.schema as Schema);
+  
+  res.json({
+    id: form.id,
+    title: form.title,
+    publicId: form.publicId,
+    html: html // Include the generated HTML
+  });
 });
 
 // Submit a response to a public form
@@ -88,4 +98,14 @@ router.delete('/:id', authenticate, async (req: AuthenticatedRequest, res: Respo
   res.json({ success: true });
 });
 
-export default router; 
+router.post('/generate-form', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const schema = req.body;
+    const html = generateForm(schema);
+    res.send(html);
+  } catch (error) {
+    res.status(400).json({ error: 'Invalid schema format' });
+  }
+});
+
+export default router;

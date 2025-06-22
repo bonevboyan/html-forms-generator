@@ -1,45 +1,35 @@
-import { useState } from 'react';
-import {
-  Container,
-  Box,
-  Typography,
-} from '@mui/material';
-import SchemaBuilder from './components/SchemaBuilder';
-import GeneratedForm from './components/GeneratedForm';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import LoginRegister from './components/LoginRegister';
+import LandingPage from './components/LandingPage';
+import MyForms from './components/MyForms';
+import Home from './components/Home';
+import SharedForm from './components/SharedForm';
+import { AuthProvider, useAuth } from './hooks/useAuth';
 
-function App() {
-  const [generatedHtml, setGeneratedHtml] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const handleReset = () => {
-    setGeneratedHtml('');
-  };
+function AppRoutes() {
+  const { isLoggedIn } = useAuth();
 
   return (
-    <Container maxWidth="lg">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom align="center">
-          HTML Form Generator
-        </Typography>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={isLoggedIn ? <Home /> : <LandingPage />} />
+        <Route path="/login" element={<LoginRegister />} />
+        <Route path="/my-forms" element={isLoggedIn ? <MyForms /> : <Navigate to="/" />} />
+        <Route path="/form/:formId" element={<SharedForm />} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
+  );
+}
 
-        <Box sx={{ display: 'flex', gap: 4 }}>
-          <Box sx={{ flex: 1 }}>
-            <SchemaBuilder 
-              onFormGenerated={setGeneratedHtml}
-              onLoadingChange={setLoading}
-            />
-          </Box>
-
-          <Box sx={{ flex: 1 }}>
-            <GeneratedForm
-              generatedHtml={generatedHtml}
-              loading={loading}
-              onReset={handleReset}
-            />
-          </Box>
-        </Box>
-      </Box>
-    </Container>
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 
