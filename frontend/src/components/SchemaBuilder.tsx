@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -7,6 +8,7 @@ import {
   Tooltip,
   Paper,
   TextField,
+  Snackbar,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -34,9 +36,11 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
   onLoadingChange,
   onFinishEdit,
 }) => {
+  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [schema, setSchema] = useState<Schema>({});
+  const [showSuccess, setShowSuccess] = useState(false);
   const { createForm, generateForm } = useFormsApi();
 
   console.log('[SchemaBuilder] Render', { title, schema });
@@ -195,7 +199,11 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
     try {
       await createForm(title, schemaCopy);
       console.log('[Save] Form saved successfully');
-      if (onFinishEdit) onFinishEdit();
+      setShowSuccess(true);
+      setTimeout(() => {
+        if (onFinishEdit) onFinishEdit();
+        navigate('/my-forms');
+      }, 2000);
     } catch (err: any) {
       console.log('[Save] Error:', err);
       setError(err.message || "Failed to save form");
@@ -306,6 +314,16 @@ const SchemaBuilder: React.FC<SchemaBuilderProps> = ({
         onAddField={addField}
         onDragEnd={handleDragEnd}
       />
+      <Snackbar
+        open={showSuccess}
+        autoHideDuration={2000}
+        onClose={() => setShowSuccess(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="success" sx={{ width: '100%' }}>
+          Form created successfully! Redirecting to My Forms...
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { API_URL } from '../config';
+import { useFormsApi } from '../hooks/useFormsApi';
 
 // Styled component for form container
 const StyledFormContainer = styled(Box)(({ theme }) => ({
@@ -85,13 +86,12 @@ const StyledFormContainer = styled(Box)(({ theme }) => ({
 }));
 
 interface FormData {
-  id: string;
   title: string;
   publicId: string;
   html: string;
 }
 
-const SharedForm: React.FC = () => {
+export const SharedForm: React.FC = () => {
   const { formId } = useParams<{ formId: string }>();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData | null>(null);
@@ -103,13 +103,20 @@ const SharedForm: React.FC = () => {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const formContainerRef = useRef<HTMLDivElement>(null);
+  const { getPublicForm, submitFormResponse } = useFormsApi();
 
   // Fetch the form data
   useEffect(() => {
     const fetchForm = async () => {
+      if (!formId) {
+        setError('No form ID provided');
+        setLoading(false);
+        return;
+      }
+      
       try {
-        const response = await axios.get<FormData>(`${API_URL}/forms/public/${formId}`);
-        setFormData(response.data);
+        const response = await getPublicForm(formId);
+        setFormData(response);
       } catch (err) {
         console.error('Error fetching form:', err);
         setError('Form not found or could not be loaded');
@@ -118,10 +125,8 @@ const SharedForm: React.FC = () => {
       }
     };
 
-    if (formId) {
-      fetchForm();
-    }
-  }, [formId]);
+    fetchForm();
+  }, [formId, getPublicForm]);
 
   // Add event handlers once when HTML is rendered
   useEffect(() => {
@@ -171,9 +176,7 @@ const SharedForm: React.FC = () => {
     setSubmitError(null);
     
     try {
-      await axios.post(`${API_URL}/forms/public/${formData.publicId}/submit`, {
-        response: formValues
-      });
+      await submitFormResponse(formData.publicId, formValues);
       setSubmitSuccess(true);
       setSubmitted(true);
       setFormValues({});

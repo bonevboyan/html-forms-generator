@@ -75,5 +75,33 @@ export const useFormsApi = () => {
     return res.json();
   };
 
-  return { getForms, createForm, updateForm, deleteForm, generateForm, getForm, getResponses };
+  const submitFormResponse = async (publicId: string, response: any) => {
+    const res = await fetch(`${API_URL}/forms/public/${publicId}/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ response }),
+    });
+    if (!res.ok) throw new Error((await res.json()).error || 'Failed to submit form');
+    return res.json();
+  };
+
+  const getPublicForm = async (publicId: string) => {
+    const res = await fetch(`${API_URL}/forms/public/${publicId}`);
+    if (!res.ok) throw new Error((await res.json()).error || 'Failed to fetch form');
+    return res.json();
+  };
+
+  return {
+    getForms,
+    createForm,
+    updateForm,
+    deleteForm,
+    getForm,
+    getResponses,
+    submitFormResponse,
+    getPublicForm,
+    generateForm,
+  };
 };

@@ -6,40 +6,29 @@ import {
   Typography,
   TextField,
   Button,
-  Alert
+  Alert,
+  CircularProgress
 } from '@mui/material';
 import { useAuth } from '../hooks/useAuth';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 const LoginRegister: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, register, error, isLoading } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    const endpoint = isLogin ? '/auth/login' : '/auth/signup';
     try {
-      const res = await fetch(`${API_URL}${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Unknown error');
-      if (data.session && data.session.access_token) {
-        login(data.session.access_token);
-        navigate('/');
+      if (isLogin) {
+        await login(email, password);
       } else {
-        setError('No token received.');
+        await register(email, password);
       }
-    } catch (err: any) {
-      setError(err.message);
+      navigate('/');
+    } catch (err) {
+      // Error is handled by the auth hook
     }
   };
 
@@ -70,14 +59,14 @@ const LoginRegister: React.FC = () => {
             margin="normal"
           />
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-          <Button
-            type="submit"
+          <Button            type="submit"
             variant="contained"
             color="primary"
             fullWidth
+            disabled={isLoading}
             sx={{ mt: 2, mb: 1, py: 1.5, fontWeight: 600 }}
           >
-            {isLogin ? 'Login' : 'Register'}
+            {isLoading ? <CircularProgress size={24} color="inherit" /> : (isLogin ? 'Login' : 'Register')}
           </Button>
         </form>
         <Box sx={{ mt: 2, textAlign: 'center' }}>
